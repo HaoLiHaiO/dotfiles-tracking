@@ -17,13 +17,13 @@ The function depends on some of my aliases, they should be appended too. If some
 
 ## Features
 
-- [ x ] check if file exists
-- [ x ] ask user in which directory they keep their files
-- - [ x ] if the folder does not exist, it is created
-- - [ x ] if the folder exists and the file does not, it is created
-- - [ x ] if both the folder and file exist, the user can choose to overwrite the existing tracked file or to abord the operation
-- [ x ] ask user which file they want to track
-- [ x ] user can go (cd) to directory or stay where they are
+- [x] check if file exists
+- [x] ask user in which directory they keep their files
+- - [x] if the folder does not exist, it is created
+- - [x] if the folder exists and the file does not, it is created
+- - [x] if both the folder and file exist, the user can choose to overwrite the existing tracked file or to abord the operation
+- [x] ask user which file they want to track
+- [x] user can go (cd) to directory or stay where they are
 
 ## Todo:
 
