@@ -6,6 +6,10 @@ The function is in the .bash_aliases.
 
 I also put it in a separate file so that it can be appended to an existing .bashrc or .bash_aliases file conveniently with echo >>
 
+**Reminder**
+
+The function depends on some of my aliases, they should be appended too. If some aliases do not exist on the user's machine, bash will tell them which aliases are problematic when trying to source the updated dot file.
+
 ## Purpose
 
 - further automation
@@ -24,5 +28,6 @@ I also put it in a separate file so that it can be appended to an existing .bash
 ## Todo:
 
 - [ ] add argument to copy / track more than one file
-- [ ] check the return value of remote git repo, if not git repo, add the right remote repo and pull, then merge local changes with version from remote git repo and push everything back
+- [ ] if .git folder exists in target folder, it is a git repo already
+- - [  ] we can assume it is the right one and ask the user if 
 - [ ] enable autocompletion
