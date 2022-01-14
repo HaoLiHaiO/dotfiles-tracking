@@ -33,3 +33,4 @@ The function depends on some of my aliases, they should be appended too. If some
 - - [ ] if it is not the right one, ask the user to change the remote url
 - - [ ] if it is not a git repo, ask the user if they want to git init, remote add origin and push upstream
 - [ ] enable autocompletion
+- [ ] add tests
