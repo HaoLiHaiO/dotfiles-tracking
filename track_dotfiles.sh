@@ -1,11 +1,18 @@
+################################################################################
+# MY SIMPLE CUSTOM IMPLEMENTATION TO TRACK DOTFILES WITHOUT OVERTHINKING
+################################################################################
+
 function trackAliases() {
+  echo Going to home directory where dot files are kept
+  cd $HOME
+  pwd
   echo Where do you keep your dot files?
-  read dotfiles_directory
+  read -e dotfiles_directory
 
   DIR="$HOME/$dotfiles_directory/"
 
   echo Which dot file do you want to track?
-  read dotfile_to_track
+  read -e dotfile_to_track
 
   if [[ -d "$DIR" && ! -f "$DIR/$dotfile_to_track" ]]; then
     cp $HOME/$dotfile_to_track $DIR
@@ -28,9 +35,32 @@ function trackAliases() {
     mkdir $DIR
     cp $HOME/$dotfile_to_track $DIR
   fi
+
+  echo ""
   echo Go to directory? y/n
+  echo Necessary if you want to add, commit and push the files.
   read gotodir
-  if [[ gotodir == "y" ]]; then
+  if [[ $gotodir == "y" ]]; then
+    echo Hello
+    echo $DIR
     cd $DIR
+  fi
+
+  if [[ ! -d "$DIR/.git/" ]]
+  then
+    echo Would you like to initiate a git repository?
+    read init_git
+    if [[ $init_git == "y" ]]
+    then
+      git init
+    fi
+  fi
+
+  if [[ -d "$DIR/.git/" && pwd == "$DIR" ]]; then
+    echo 'Would you like to add, commit and push the updated file(s)? y/n'
+    read push_or_not
+    if [[ $push_or_not == "y" ]]; then
+      pushAll
+    fi
   fi
 }
