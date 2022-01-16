@@ -33,7 +33,7 @@ The function depends on some of my aliases, they should be appended too. If some
 
 - [ ] add argument to copy / track more than one file
 - [x] if .git folder exists in target folder, it is a git repo already
-- - [ ] if the remote git repo is the right one: directly add, commit and push
+- - [x] if the remote git repo is the right one: ask the user if they want to directly add, commit and push
 - - [ ] if it is not the right one, ask the user to change the remote url
 - - [x] if it is not a git repo, ask the user if they want to git init
 - - [ ] remote add origin and push upstream
