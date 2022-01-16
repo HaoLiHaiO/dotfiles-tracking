@@ -126,9 +126,8 @@ function trackAliases() {
   echo Necessary if you want to add, commit and push the files.
   read gotodir
   if [[ $gotodir == "y" ]]; then
-    echo Hello
-    echo $DIR
     cd $DIR
+    pwd
   fi
 
   if [[ ! -d "$DIR/.git/" ]]; then

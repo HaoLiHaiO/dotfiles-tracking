@@ -1,7 +1,3 @@
-################################################################################
-# MY SIMPLE CUSTOM IMPLEMENTATION TO TRACK DOTFILES WITHOUT OVERTHINKING
-################################################################################
-
 function trackAliases() {
   echo Going to home directory where dot files are kept
   cd $HOME
@@ -41,17 +37,14 @@ function trackAliases() {
   echo Necessary if you want to add, commit and push the files.
   read gotodir
   if [[ $gotodir == "y" ]]; then
-    echo Hello
-    echo $DIR
     cd $DIR
+    pwd
   fi
 
-  if [[ ! -d "$DIR/.git/" ]]
-  then
+  if [[ ! -d "$DIR/.git/" ]]; then
     echo Would you like to initiate a git repository?
     read init_git
-    if [[ $init_git == "y" ]]
-    then
+    if [[ $init_git == "y" ]]; then
       git init
     fi
   fi
