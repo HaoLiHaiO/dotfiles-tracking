@@ -41,19 +41,19 @@ function trackAliases() {
     pwd
   fi
 
-  if [[ ! -d "$DIR/.git/" ]]; then
-    echo Would you like to initiate a git repository?
-    read init_git
-    if [[ $init_git == "y" ]]; then
-      git init
-    fi
-  fi
-
   if [[ -d "$DIR/.git/" && pwd == "$DIR" ]]; then
     echo 'Would you like to add, commit and push the updated file(s)? y/n'
     read push_or_not
     if [[ $push_or_not == "y" ]]; then
       pushAll
+    fi
+  fi
+
+  if [[ ! -d "$DIR/.git/" ]]; then
+    echo Would you like to initiate a git repository?
+    read init_git
+    if [[ $init_git == "y" ]]; then
+      git init
     fi
   fi
 }
