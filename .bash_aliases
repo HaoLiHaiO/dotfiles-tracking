@@ -131,12 +131,10 @@ function trackAliases() {
     cd $DIR
   fi
 
-  if [[ ! -d "$DIR/.git/" ]]
-  then
+  if [[ ! -d "$DIR/.git/" ]]; then
     echo Would you like to initiate a git repository?
     read init_git
-    if [[ $init_git == "y" ]]
-    then
+    if [[ $init_git == "y" ]]; then
       git init
     fi
   fi
@@ -148,6 +146,20 @@ function trackAliases() {
       pushAll
     fi
   fi
+}
+
+function checkGit() {
+  for d in */; do
+    cd "$d"
+    git status &>/dev/null
+
+    if [ "$?" -ne 0 ]; then
+      pwd
+      echo "not a git repo"
+    fi
+
+    cd ..
+  done
 }
 
 ################################################################################
