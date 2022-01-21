@@ -162,6 +162,56 @@ function checkGit() {
 }
 
 ################################################################################
+# Arch Linux
+################################################################################
+
+function updateChrome() {
+  echo "Going to the home directory"
+  echo ""
+  cd $HOME
+  DL="$HOME/Downloads"
+
+  if [ ! -d $DL ]; then
+    mkdir $DL
+  fi
+
+  cd $DL
+  AUR="https://aur.archlinux.org/"
+  GC="google-chrome"
+  echo "Starting to clone Google Chrome AUR git"
+  git clone "$AUR/$GC.git"
+  cd $GC
+  makepkg -si
+  cd ..
+  echo ""
+  echo "Removing now useless directory..."
+  rm -rf "$GC/"
+}
+
+function updateVscode() {
+  echo "Going to the home directory"
+  echo ""
+  cd $HOME
+  DL="$HOME/Downloads"
+
+  if [ ! -d $DL ]; then
+    mkdir $DL
+  fi
+
+  cd $DL
+  AUR="https://aur.archlinux.org/"
+  VSCODE="visual-studio-code-bin"
+  echo "Starting to clone VSCODE-BIN AUR git"
+  git clone "$AUR/$VSCODE.git"
+  cd $VSCODE/
+  makepkg -si
+  cd ..
+  echo ""
+  echo "Removing now useless directory..."
+  rm -rf "$VSCODE/"
+}
+
+################################################################################
 # nvim
 ################################################################################
 
