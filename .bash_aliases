@@ -211,6 +211,29 @@ function updateVscode() {
   rm -rf "$VSCODE/"
 }
 
+function updateSlack() {
+  echo "Going to the home directory"
+  echo ""
+  cd $HOME
+  DL="$HOME/Downloads"
+
+  if [ ! -d $DL ]; then
+    mkdir $DL
+  fi
+
+  cd $DL
+  AUR="https://aur.archlinux.org/"
+  SLACK="slack-desktop"
+  echo "Starting to clone Slack AUR git"
+  git clone "$AUR/$SLACK.git"
+  cd $SLACK/
+  makepkg -si
+  cd ..
+  echo ""
+  echo "Removing now useless directory..."
+  rm -rf "$SLACK/"
+}
+
 ################################################################################
 # nvim
 ################################################################################
