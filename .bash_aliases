@@ -76,6 +76,8 @@ alias dfh='df -h'
 alias freem='free -m'
 alias gh='history | grep'
 alias left='ls -t -1'
+alias ll='ls -l'
+alias la='ls -aF'
 alias lt='ll --human-readable --size -1 -S --classify'
 alias sbr='source ~/.bashrc'
 
