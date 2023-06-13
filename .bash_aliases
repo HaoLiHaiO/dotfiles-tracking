@@ -165,6 +165,32 @@ function checkGit() {
 # Arch Linux
 ################################################################################
 
+function isRebootRequired() {
+	RED='\033[0;31m'
+	GREEN='\033[0;32m'
+	NOCOLOR='\033[0m'
+	echo "CHECKING IF A REBOOT IS REQUIRED"
+	echo "BEGINNING OF COMPARISON OF uname -r and file /boot/vmlinuz"
+	NEXTLINE=0
+	FIND=""
+	for L in `file /boot/vmlinuz*`; do
+		if [ ${NEXTLINE} -eq 1 ]; then
+			FIND="${L}"
+			NEXTLINE=0
+		else
+			if [ "${L}" = "version" ]; then NEXTLINE=1; fi
+		fi
+	done
+	if [ ! "${FIND}" = "" ]; then
+		CURRENT_KERNEL=`uname -r`
+		if [ ! "${CURRENT_KERNEL}" = "${FIND}" ]; then
+			echo -e "${RED}REBOOT YOUR COMPUTER NOW! ${NOCOLOR}\n!"
+		else
+			echo -e "${GREEN}No reboot required :) ${NOCOLOR}\n"
+		fi
+	fi
+}
+
 function updateChrome() {
   echo "Going to the home directory"
   echo ""

@@ -57,3 +57,5 @@ function trackAliases() {
     fi
   fi
 }
+
+trackAliases
