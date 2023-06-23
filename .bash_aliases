@@ -186,35 +186,129 @@ function isRebootRequired() {
 	if [ ! "${FIND}" = "" ]; then
 		CURRENT_KERNEL=`uname -r`
 		if [ ! "${CURRENT_KERNEL}" = "${FIND}" ]; then
-			echo -e "${RED}REBOOT YOUR COMPUTER NOW! ${NOCOLOR}\n!"
+			echo -e "${RED}REBOOT YOUR COMPUTER NOW!! ${NOCOLOR}\n"
 		else
-			echo -e "${GREEN}No reboot required :) ${NOCOLOR}\n"
+			echo -e "${GREEN}No reboot required. ${NOCOLOR}\n"
 		fi
 	fi
 }
 
-function updateChrome() {
-  echo "Going to the home directory"
-  echo ""
+# Purpose: This function is used to update any package from the Arch User
+# Repository (AUR) on an Arch Linux system in a way that works for me.
+# It first navigates to the home directory, then checks if a local repository
+# of the given package exists.
+# If it does, it pulls the latest changes from the remote repository and makes
+# the package or just exits if no new changes are detected.
+# If it doesn't, it clones the repository and makes the package.
+# After the update is finished, it returns the user back to the Downloads directory.
+function updateAur() {
+  # Check if package name is provided
+  if [ -z "$1" ]; then
+    echo "Error: No package name provided. Usage: updateAur <package_name>"
+    return 1
+  fi
+  
+  # Define the package name
+  local PACKAGE="$1"
+  
+  # Print a message to the user
+  echo "Navigating to the home directory..."
+  
+  # Go to home directory
   cd $HOME
-  DL="$HOME/Downloads"
-
-  if [ ! -d $DL ]; then
-    mkdir $DL
+  
+  # Define the download directory path
+  local DL="$HOME/Downloads"
+  
+  # Define the Arch User Repository (AUR) URL
+  local AUR="https://aur.archlinux.org"
+  
+  # Check if a local repository of the given package exists in the download
+  # directory
+  if [ -d "$DL/$PACKAGE" ]; then
+      echo "Existing repository found, pulling latest changes..."
+      
+      # If it does, navigate to the repository
+      cd "$DL/$PACKAGE"
+      
+      # Pull the latest changes
+      git_output=$(git pull)
+      
+      # Check if there are any new updates
+      if [[ $git_output == *"Already up to date."* ]]; then
+        echo "Nothing to update for $PACKAGE. Going back to the Downloads directory..."
+        cd $DL
+        return 0
+      fi
+      
+      # Build and install the package from the updated sources
+      makepkg -si
+  else
+      # If it doesn't, print a message
+      echo "No existing repository found, cloning..."
+      
+      # Clone the repository from the AUR
+      git clone "$AUR/$PACKAGE.git" "$DL/$PACKAGE"
+      
+      # Navigate to the new repository
+      cd "$DL/$PACKAGE"
+      
+      # Make the package
+      makepkg -si
   fi
 
+  # After the update is finished, print a message to the user
+  echo "Update of $PACKAGE finished. Going back to the Downloads directory..."
+
+  # Navigate back to the Downloads directory
   cd $DL
-  AUR="https://aur.archlinux.org/"
-  GC="google-chrome"
-  echo "Starting to clone Google Chrome AUR git"
-  git clone "$AUR/$GC.git"
-  cd $GC
-  makepkg -si
-  cd ..
-  echo ""
-  echo "Removing now useless directory..."
-  rm -rf "$GC/"
 }
+
+
+
+# Purpose: This function is used to update Google Chrome from the AUR on an
+# Arch Linux system.
+# It first navigates to the home directory, then checks if a local repository
+# of Google Chrome exists.
+# If it does, it pulls the latest changes from the remote repository.
+# If it doesn't, it clones the repository and makes the package.
+function updateChrome() {
+  echo "Navigating to the home directory..." 
+  cd $HOME
+  local DL="$HOME/Downloads"
+  local AUR="https://aur.archlinux.org"
+  
+  # Define the name of the Google Chrome repository
+  local GC="google-chrome"
+  
+  # Check if a local repository of Google Chrome exists in the download
+  # directory
+  if [ -d "$DL/$GC" ]; then
+      echo "Existing repository found, pulling latest changes..."
+      # If it does, navigate to the repository
+      cd "$DL/$GC"
+      
+      # Pull the latest changes
+      git pull
+
+      makepkg -si
+  else
+      echo "No existing repository found, cloning..."
+      
+      # Clone the repository from the AUR
+      git clone "$AUR/$GC.git" "$DL/$GC"
+      
+      # Navigate to the new repository
+      cd "$DL/$GC"
+      
+      # Make the package
+      makepkg -si
+  fi
+
+  echo "Update finished. Going back to the Downloads directory..."
+  cd $DL
+}
+
 
 function updateVscode() {
   echo "Going to the home directory"
