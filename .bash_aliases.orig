@@ -76,7 +76,7 @@ alias dfh='df -h'
 alias freem='free -m'
 alias gh='history | grep'
 alias left='ls -t -1'
-alias ll='ls -l'
+alias ll='ls -lA'
 alias la='ls -aF'
 alias lt='ll --human-readable --size -1 -S --classify'
 alias sbr='source ~/.bashrc'
@@ -84,6 +84,41 @@ alias sbr='source ~/.bashrc'
 function completeAlias() {
   echo "complete -F _complete_alias ${1}" >>~/.bash_completion
 }
+
+################################################################################
+# openvpn
+################################################################################
+
+startvpn() {
+    echo "Select a VPN location:"
+    echo "1) Bordeaux"
+    echo "2) Marseille"
+    echo "3) Paris"
+    echo "4) Zurich"
+
+    read -p "Enter your choice (1-4): " choice
+
+    case $choice in
+        1) config="NCVPN-FR-Bordeaux-UDP.ovpn" ;;
+        2) config="NCVPN-FR-Marseille-UDP.ovpn" ;;
+        3) config="NCVPN-FR-Paris-UDP.ovpn" ;;
+        4) config="NCVPN-CH-Zurich-UDP.ovpn" ;;
+        *) echo "Invalid choice"; return ;;
+    esac
+
+    sudo openvpn --config "/etc/openvpn/udp/$config" --daemon
+
+    # Wait for a short duration to allow the VPN connection to establish.
+    sleep 10
+
+    # Check for tun or tap interface
+    if ip link show | grep -qE 'tun|tap'; then
+        echo "VPN connection seems to be established successfully."
+    else
+        echo "VPN connection failed or took too long to establish."
+    fi
+}
+
 
 ################################################################################
 # MY SIMPLE CUSTOM IMPLEMENTATION TO TRACK DOTFILES WITHOUT OVERTHINKING
@@ -386,6 +421,17 @@ alias dsa='docker stop $(docker ps -q)'
 alias dsta='docker start $(docker ps -qa)'
 alias dra='docker stop $(docker ps -q); docker rm $(docker ps -qa)'
 alias dei='docker exec -ti'
+
+dockersize() {
+    docker manifest inspect -v "$1" | 
+    jq -c 'if type == "array" then .[] else . end' | 
+    jq -r '[ ( .Descriptor.platform | [ .os, .architecture, .variant, ."os.version" ] | del(..|nulls) | join("/") ), ( [ .SchemaV2Manifest.layers[].size ] | add ) ] | 
+    join(" ")' | 
+    numfmt --to iec --format '%.2f' --field 2 | 
+    sort | 
+    column -t
+}
+
 
 ################################################################################
 # docker-compose

@@ -422,6 +422,37 @@ alias dsta='docker start $(docker ps -qa)'
 alias dra='docker stop $(docker ps -q); docker rm $(docker ps -qa)'
 alias dei='docker exec -ti'
 
+dockersize() {
+    if ! docker_output=$(docker manifest inspect -v "$1" 2>/dev/null); then
+        echo "Error: Failed to fetch manifest for image '$1'. Please check if the image name is correct."
+        return 1
+    fi
+
+    if ! jq_output=$(echo "$docker_output" | jq -c 'if type == "array" then .[] else . end' 2>/dev/null); then
+        echo "Error: Failed to process JSON output. Ensure jq is correctly processing the manifest."
+        return 1
+    fi
+
+    if ! size_output=$(echo "$jq_output" | jq -r '
+        [ 
+            ( .Descriptor.platform | [ .os, .architecture, .variant, ."os.version" ] | del(..|nulls) | join("/") ), 
+            ( [ .SchemaV2Manifest.layers[].size ] | add ) 
+        ] | join(" ")' 2>/dev/null); then
+        echo "Error: Failed to extract and process sizes from manifest. Check the structure of the manifest."
+        return 1
+    fi
+
+    if ! formatted_output=$(echo "$size_output" | numfmt --to iec --format '%.2f' --field 2 2>/dev/null); then
+        echo "Error: Failed to format sizes into human-readable format."
+        return 1
+    fi
+
+    echo "$formatted_output" | sort | column -t
+}
+
+
+
+
 ################################################################################
 # docker-compose
 ################################################################################
