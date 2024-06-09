@@ -1,4 +1,47 @@
 ################################################################################
+# golang
+################################################################################
+
+alias gi='goimports -w -v .'
+
+alias gb='go build'
+alias gr='go run'
+alias gins='go install'
+alias gtest='go test'
+alias gvet='go vet'
+alias gf='go fmt'
+alias gdoc='godoc -http=:6060'
+alias gmodtidy='go mod tidy'
+alias gmodvendor='go mod vendor'
+alias gclean='go clean -cache -modcache -i -r'
+alias gg='go get -u'
+alias ggv='go get'
+alias gmodu='go get -u ./... && go mod tidy'
+alias gstatic='staticcheck ./...'
+alias gdocs='godoc -http=:6060'
+alias glint='golangci-lint run'
+alias ggen='go generate ./...'
+alias gtestv='go test -v ./...'
+alias gmodinit='go mod init $(basename $(pwd))'
+
+benchmark() {
+  go test -bench=. $@
+}
+
+
+function gocover() { 
+  t=$(tempfile)
+  go test $COVERFLAGS -coverprofile=$t $@ && go tool cover -func=$t && unlink $t
+}
+
+function coverweb() {
+  t=$(tempfile)
+  go test $COVERFLAGS -coverprofile=$t $@ && go tool cover -html=$t && unlink $t
+}
+
+
+
+################################################################################
 # git
 ################################################################################
 
@@ -29,14 +72,13 @@ alias gpur='git pull --rebase --autostash'
 alias gpurm='git fetch --all && git pull --rebase --autostash origin master'
 alias gpurmi='git fetch --all && git rebase --interactive --autostash origin/master'
 alias gmm='git fetch --all && git merge origin/master'
-alias gr='git rebase --autostash'
+alias gras='git rebase --autostash'
 alias gri='git rebase --interactive'
 alias gra='git rebase --abort'
 alias grc='git rebase --continue'
 alias grs='git rebase --skip'
 alias grv='git remote -v'
 alias greh='git reset --hard'
-alias gri='git rebase --interactive'
 alias grsh='git reset --hard'
 alias gs='git status'
 alias gstl='git stash list'
@@ -470,22 +512,6 @@ function dcdf() {
   FILE=$1
   shift
   docker-compose -f $FILE down $@
-}
-
-################################################################################
-# yadm
-################################################################################
-
-alias yms='yadm status'
-alias yma='yadm add'
-alias ymp='yadm push'
-alias ymcm='yadm commit -m'
-alias ymc='yadm commit -m'
-alias ymd='yadm diff'
-alias ymdc='yadm diff --cached'
-
-function ymln() {
-  yadm log "-$1"
 }
 
 ################################################################################

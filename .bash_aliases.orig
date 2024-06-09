@@ -1,4 +1,47 @@
 ################################################################################
+# golang
+################################################################################
+
+alias gi='goimports -w -v .'
+
+alias gb='go build'
+alias gr='go run'
+alias gins='go install'
+alias gtest='go test'
+alias gvet='go vet'
+alias gf='go fmt'
+alias gdoc='godoc -http=:6060'
+alias gmodtidy='go mod tidy'
+alias gmodvendor='go mod vendor'
+alias gclean='go clean -cache -modcache -i -r'
+alias gg='go get -u'
+alias ggv='go get'
+alias gmodu='go get -u ./... && go mod tidy'
+alias gstatic='staticcheck ./...'
+alias gdocs='godoc -http=:6060'
+alias glint='golangci-lint run'
+alias ggen='go generate ./...'
+alias gtestv='go test -v ./...'
+alias gmodinit='go mod init $(basename $(pwd))'
+
+benchmark() {
+  go test -bench=. $@
+}
+
+
+function gocover() { 
+  t=$(tempfile)
+  go test $COVERFLAGS -coverprofile=$t $@ && go tool cover -func=$t && unlink $t
+}
+
+function coverweb() {
+  t=$(tempfile)
+  go test $COVERFLAGS -coverprofile=$t $@ && go tool cover -html=$t && unlink $t
+}
+
+
+
+################################################################################
 # git
 ################################################################################
 
@@ -36,7 +79,6 @@ alias grc='git rebase --continue'
 alias grs='git rebase --skip'
 alias grv='git remote -v'
 alias greh='git reset --hard'
-alias gri='git rebase --interactive'
 alias grsh='git reset --hard'
 alias gs='git status'
 alias gstl='git stash list'
@@ -423,14 +465,34 @@ alias dra='docker stop $(docker ps -q); docker rm $(docker ps -qa)'
 alias dei='docker exec -ti'
 
 dockersize() {
-    docker manifest inspect -v "$1" | 
-    jq -c 'if type == "array" then .[] else . end' | 
-    jq -r '[ ( .Descriptor.platform | [ .os, .architecture, .variant, ."os.version" ] | del(..|nulls) | join("/") ), ( [ .SchemaV2Manifest.layers[].size ] | add ) ] | 
-    join(" ")' | 
-    numfmt --to iec --format '%.2f' --field 2 | 
-    sort | 
-    column -t
+    if ! docker_output=$(docker manifest inspect -v "$1" 2>/dev/null); then
+        echo "Error: Failed to fetch manifest for image '$1'. Please check if the image name is correct."
+        return 1
+    fi
+
+    if ! jq_output=$(echo "$docker_output" | jq -c 'if type == "array" then .[] else . end' 2>/dev/null); then
+        echo "Error: Failed to process JSON output. Ensure jq is correctly processing the manifest."
+        return 1
+    fi
+
+    if ! size_output=$(echo "$jq_output" | jq -r '
+        [ 
+            ( .Descriptor.platform | [ .os, .architecture, .variant, ."os.version" ] | del(..|nulls) | join("/") ), 
+            ( [ .SchemaV2Manifest.layers[].size ] | add ) 
+        ] | join(" ")' 2>/dev/null); then
+        echo "Error: Failed to extract and process sizes from manifest. Check the structure of the manifest."
+        return 1
+    fi
+
+    if ! formatted_output=$(echo "$size_output" | numfmt --to iec --format '%.2f' --field 2 2>/dev/null); then
+        echo "Error: Failed to format sizes into human-readable format."
+        return 1
+    fi
+
+    echo "$formatted_output" | sort | column -t
 }
+
+
 
 
 ################################################################################
@@ -450,22 +512,6 @@ function dcdf() {
   FILE=$1
   shift
   docker-compose -f $FILE down $@
-}
-
-################################################################################
-# yadm
-################################################################################
-
-alias yms='yadm status'
-alias yma='yadm add'
-alias ymp='yadm push'
-alias ymcm='yadm commit -m'
-alias ymc='yadm commit -m'
-alias ymd='yadm diff'
-alias ymdc='yadm diff --cached'
-
-function ymln() {
-  yadm log "-$1"
 }
 
 ################################################################################
