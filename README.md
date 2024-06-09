@@ -51,6 +51,12 @@ ctrl + p in VSCode: ext install emeraldwalk.RunOnSave
 
 The check_aliases.sh script will automatically run and check for duplicate aliases. If duplicates are found, they will be reported in the output console (output, select Run on save from the dropdown).
 
+## How to test
+
+```sh
+bats test_check_aliases.bats
+```
+
 ## Features
 
 - [x] check if file exists
