@@ -18,6 +18,39 @@ The function depends on some of my aliases, they should be appended too. If some
 - can also be used to update dot files on different machines with a simple git clone and cp file $HOME
 - can also be used to cp dotfile $HOME on a fresh install
 
+## How It Works
+
+- **Script:** A shell script (check_aliases.sh) has been created to scan your alias definitions and report any duplicates.
+- **Run on Save Extension:** The "Run on Save" extension in VS Code is configured to automatically execute the script whenever you save your shell configuration files.
+
+```
+ctrl + p in VSCode: ext install emeraldwalk.RunOnSave  
+```
+
+- In settings.json:
+
+```json
+{
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                "match": "\\.(bashrc|zshrc|bash_aliases|zsh_aliases)$",
+                "cmd": "/absolute/path/to/check_aliases.sh"
+            }
+        ]
+    }
+}
+```
+
+- Usage: whenever you save any of the following files:
+
+- - ~/.bashrc
+- - ~/.zshrc
+- - ~/.bash_aliases
+- - ~/.zsh_aliases
+
+The check_aliases.sh script will automatically run and check for duplicate aliases. If duplicates are found, they will be reported in the output console (output, select Run on save from the dropdown).
+
 ## Features
 
 - [x] check if file exists
