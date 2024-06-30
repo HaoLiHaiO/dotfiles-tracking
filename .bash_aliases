@@ -244,6 +244,8 @@ function checkGit() {
 # Arch Linux
 ################################################################################
 
+alias aur-list='pacman -Qqm'
+
 function isRebootRequired() {
 	RED='\033[0;31m'
 	GREEN='\033[0;32m'
