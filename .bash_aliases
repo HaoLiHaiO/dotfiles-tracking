@@ -39,7 +39,14 @@ function coverweb() {
   go test $COVERFLAGS -coverprofile=$t $@ && go tool cover -html=$t && unlink $t
 }
 
+################################################################################
+# SonarQube
+################################################################################
 
+# mount current working directory as a volume at /usr/src where sonar-scanner
+# is looking for source code.
+
+alias sonar-scanner='docker run --rm -v "$(pwd):/usr/src" sonar-scanner-cli'
 
 ################################################################################
 # git
