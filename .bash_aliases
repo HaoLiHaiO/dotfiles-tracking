@@ -129,6 +129,7 @@ alias ll='ls -lA'
 alias la='ls -aF'
 alias lt='ll --human-readable --size -1 -S --classify'
 alias sbr='source ~/.bashrc'
+alias lshr='du -ah --max-depth 1'
 
 function completeAlias() {
   echo "complete -F _complete_alias ${1}" >>~/.bash_completion
